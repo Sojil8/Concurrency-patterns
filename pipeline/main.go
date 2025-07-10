@@ -2,16 +2,16 @@ package main
 
 import "fmt"
 
-func gen(nums ...int) <-chan int {
+func checkOdd(nums ...int) <-chan int {
 	out := make(chan int)
-
 	go func() {
-		for _, n := range nums {
-			out <- n
+		for _, v := range nums {
+			if v%2 == 0 {
+				out <- v
+			}
 		}
 		close(out)
 	}()
-
 	return out
 }
 
@@ -19,20 +19,20 @@ func sq(in <-chan int) <-chan int {
 	out := make(chan int)
 
 	go func() {
-		for n := range in {
-			out <- n * n
+		for ch := range in {
+			out <- ch * ch
+
 		}
 		close(out)
 	}()
-
 	return out
 }
 
 func main() {
-	c:=gen(3,4,5,34,4)
-	out:=sq(c)
+	ch := checkOdd(7, 4, 56, 7, 4, 3)
+	ch1 := sq(ch)
 
-	for n:=range out{
-		fmt.Println(n)
+	for r := range ch1 {
+		fmt.Println(r)
 	}
 }
